@@ -48,7 +48,7 @@ if(USE_ROSBUILD)
 
 else()
   # Use Catkin
-  find_package(catkin REQUIRED 
+  find_package(catkin REQUIRED
     COMPONENTS roscpp image_transport sensor_msgs nodelet
     camera_calibration_parsers camera_info_manager
     )
@@ -60,6 +60,11 @@ else()
     camera_calibration_parsers camera_info_manager
     DEPENDS GSTREAMER GST_APP
     )
+  include_directories(
+    /usr/include/gobject-introspection-1.0
+    /usr/include/glib-2.0
+    /usr/lib/x86_64-linux-gnu/glib-2.0/include)
+  link_directories()
 
   include_directories(
     include
@@ -71,6 +76,11 @@ else()
   target_link_libraries(gscam
     ${catkin_LIBRARIES}
     ${GSTREAMER_LIBRARIES}
+    girepository-1.0
+    gobject-2.0
+    glib-2.0
+    tcam
+    tcamprop
     ${GST_APP_LIBRARIES})
 
   add_executable(gscam_node src/gscam_node.cpp)
@@ -106,10 +116,13 @@ else()
     examples/v4l.launch
     examples/gscam_nodelet.launch
     examples/nodelet_pipeline.launch
+    examples/v4l-tis-simple.launch
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
     )
 
-  install(FILES examples/uncalibrated_parameters.ini
+  install(FILES
+    examples/uncalibrated_parameters.ini
+    examples/dfm27u_1280x960_calib.ini
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/examples
     )
 
@@ -123,7 +136,7 @@ endif()
 # Interim compatibility
 # Remove this in the next distribution release
 configure_file(scripts/gscam_node.in ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/gscam_node)
-file(COPY ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/gscam_node 
+file(COPY ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/gscam_node
   DESTINATION ${EXECUTABLE_OUTPUT_PATH}
   FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 

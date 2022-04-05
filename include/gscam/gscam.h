@@ -62,6 +62,8 @@ namespace gscam {
     // Case of a jpeg only publisher
     ros::Publisher jpeg_pub_;
     ros::Publisher cinfo_pub_;
+    bool auto_gain_;
+    bool auto_exposure_;
   };
 
 }
